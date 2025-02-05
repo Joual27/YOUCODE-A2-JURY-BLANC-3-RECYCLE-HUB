@@ -10,7 +10,8 @@
     --secondary-green: #B5C5B6;
     --primary-b: #E5E2E3;
     --secondary-b: #F8F8FA;
-}
+    --input-color : rgba(39,39,42,0.85)
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 
 body{
    font-family: 'IBM Plex Mono';
