@@ -1,5 +1,5 @@
 <div class="absolute w-full h-[100vh] flex items-center justify-center bg-black bg-opacity-65 z-50 " (click)="closePopup()">
-    <div class="bg-white w-[50%] h-[60vh] rounded-3xl flex" (click)="$event.stopPropagation()">
+    <div class="bg-white w-[50%] min-h-[60vh] rounded-3xl flex" (click)="$event.stopPropagation()">
         <div class="w-[50%] p-8 bg-black rounded-l-3xl">
             <div class="flex flex-col gap-6">
                 <h2 class="text-gray-400 uppercase font-semibold text-[.95rem]">Start For Free</h2>
@@ -15,7 +15,7 @@
                }
             </div>
         </div>
-        <div class="w-[50%] bg-[#23C95A] bg-opacity-25 flex items-center justify-center rounded-r-3xl">
+        <div class="w-[50%] bg-[#23C95A] bg-opacity-25 flex items-center justify-center rounded-r-3xl ">
             <img src="assets/images/auth-img.gif" class="w-[60%] h-[50%]" alt="">
         </div>
     </div>

@@ -1,6 +1,8 @@
 import { createReducer, on } from "@ngrx/store";
 import { initialHomeState } from "./home.state";
 import * as homeActions from "./home.actions"
+import * as authActions from "../../auth/state/auth.actions"
+
 
 
 export const homeReducer = createReducer(
@@ -24,5 +26,13 @@ export const homeReducer = createReducer(
     on(homeActions.toggleAuthForm, (state) => ({
         ...state,
         activeAuthForm: state.activeAuthForm === "register" ? "login" : "register",
+    })),
+    on(authActions.validForm , (state) => ({
+        ...state,
+        authErrors : {}
+    })),
+    on(authActions.clearAuthFormErrors , (state) => ({
+        ...state , 
+        authErrors : {}
     }))
 ) 
