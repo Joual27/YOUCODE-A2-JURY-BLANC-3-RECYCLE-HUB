@@ -27,12 +27,12 @@ export const homeReducer = createReducer(
         ...state,
         activeAuthForm: state.activeAuthForm === "register" ? "login" : "register",
     })),
-    on(authActions.validForm , (state) => ({
+    on(authActions.validForm , (state ) => ({
         ...state,
         authErrors : {}
     })),
     on(authActions.clearAuthFormErrors , (state) => ({
         ...state , 
         authErrors : {}
-    }))
+    })),
 ) 

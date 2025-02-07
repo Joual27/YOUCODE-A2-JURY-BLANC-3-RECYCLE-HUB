@@ -1,3 +1,4 @@
+import { User } from "../../../shared/models"
 
 
 export interface AuthErrors {
@@ -17,7 +18,14 @@ export interface RegistrationData {
     role : 'user'
 }
 
+
 export interface LoginData {
     email : string ,
     password : string 
+}
+
+
+export interface AuthStateInterface{
+    signedInUser : User | null ,
+    shownAuthSuccessPopup : boolean
 }
