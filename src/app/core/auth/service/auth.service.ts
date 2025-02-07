@@ -12,6 +12,7 @@ import * as CryptoJS from 'crypto-js';
 export class AuthService {
   private http = inject(HttpClient);
   private apiUrl = environments.apiUrl;
+  private secretKey = environments.apiUrl;
   private readonly storageKey = 'loggedInUser';
   constructor() { }
 
@@ -25,7 +26,6 @@ export class AuthService {
     if (!ciphertext) {
       return null;
     }
-    // Decrypt the stored ciphertext
     const bytes = CryptoJS.AES.decrypt(ciphertext, this.secretKey);
     const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
     return JSON.parse(decryptedData);
