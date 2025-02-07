@@ -37,20 +37,32 @@ export class RegisrationFormComponent {
     )
   }
 
-  handleSubmit(event : Event) : void {
+  handleSubmit(event: Event): void {
     event.preventDefault();
-    if(this.registrationForm.invalid){
+    
+    if (this.registrationForm.invalid) {
       let errors = this.validationService.getFormErrors(this.registrationForm);
       this.authErrors.set(errors);
-    }
-    else{
-      this.store.dispatch(authActions.validForm(this.registrationForm.value));
-      this.shownSuccessMsg.set(true);
-      setTimeout(() => {
-        this.shownSuccessMsg.set(false);
-        window.location.href = "http://localhost:4200/requests"
-      } , 3000)
-      this.resetValidationErrs();
+    } else {
+      const email = this.registrationForm.get('email')?.value;
+      this.validationService.isUniqueEmail(email).subscribe((isUnique) => {
+        if (!isUnique) {
+          this.authErrors.set({
+            email: 'Email must be unique',
+            fullName : null ,
+            password : null , 
+            address : null
+          });
+        } else {
+          this.store.dispatch(authActions.validForm(this.registrationForm.value));
+          this.shownSuccessMsg.set(true);
+          setTimeout(() => {
+            this.shownSuccessMsg.set(false);
+            window.location.href = "http://localhost:4200/requests";
+          }, 3000);
+          this.resetValidationErrs();
+        }
+      });
     }
   }
 

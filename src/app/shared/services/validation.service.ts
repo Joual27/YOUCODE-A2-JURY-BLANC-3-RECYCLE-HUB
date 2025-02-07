@@ -1,11 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AuthErrors } from '../../modules/auth/models/auth.models';
+import { User } from '../models';
+import { HttpClient } from '@angular/common/http';
+import { environments } from '../../environments/environments';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
+  private http = inject(HttpClient);
+  private apiUrl = environments.apiUrl;
 
   private errorMessages: Record<string, string> = {
     required: '{field} is required.',
@@ -45,4 +51,16 @@ export class ValidationService {
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, (str) => str.toUpperCase());
   }
+
+  isUniqueEmail(email: string): Observable<boolean> {
+    return this.http.get<User[]>(`${this.apiUrl}/users?email=${email}`).pipe(
+      map((users : User[]) => {
+        return users.length === 0;
+      }),
+      catchError(() => {
+        return of(false);
+      })
+    );
+  }
+
 }

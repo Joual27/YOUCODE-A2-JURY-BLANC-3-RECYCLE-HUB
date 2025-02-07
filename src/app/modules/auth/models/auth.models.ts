@@ -26,6 +26,6 @@ export interface LoginData {
 
 
 export interface AuthStateInterface{
-    signedInUser : User | null ,
-    shownAuthSuccessPopup : boolean
-}
+    shownAuthSuccessPopup : boolean,
+    shownLoginFailureMsg : boolean
+}   
