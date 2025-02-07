@@ -14,18 +14,19 @@ export const registrationSuccess = createAction(
     props<RegistrationData>()
 )
 
-export const regisrationFailure = createAction(
+export const registrationFailure = createAction(
     "[Auth Popup] Failure In registration",
     props<{error : string}>()
 )
 
 export const validLoginForm = createAction(
-    "[Auth Popup] valid login form"
+    "[Auth Popup] valid login form",
+    props<{email : string , password : string}>()
 )
 
 export const loginSuccess = createAction(
     "[Auth Popup] login successfully",
-    props<User>()
+    props<User>()   
 )
 
 export const loginFailure = createAction(

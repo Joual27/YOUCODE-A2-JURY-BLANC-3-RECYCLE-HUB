@@ -1,43 +1,19 @@
 {
   "users": [
     {
-      "id": "a9f9",
-      "fullName": "edeklmd",
-      "address": "iojieojd",
-      "email": "mkwmd@gmail.com",
-      "password": "jpoejped",
-      "role": "user"
-    },
-    {
-      "id": "0daf",
-      "fullName": "kryptonit qt",
-      "address": "N 4 RUE BOUMAAZ QU BAHIA SAFI .",
+      "id": "1c54",
+      "fullName": "kryptoniteqt",
+      "address": "N4 RUE BOUMAAZ QU BAHIA SAFI",
       "email": "kryptoqt34@gmail.com",
       "password": "Fasha321@",
       "role": "user"
     },
     {
-      "id": "5401",
-      "fullName": "dkpedkedo",
-      "address": "ojkewopdk",
-      "email": "kpowkdpow@kdmpew",
-      "password": "pokwe",
-      "role": "user"
-    },
-    {
-      "id": "4cb9",
-      "fullName": "stock stef",
-      "address": "jioedjedioejFasha321@q",
-      "email": "stef@gmail.com",
-      "password": "nefnhreiufhjrufhjruifhriufhrf",
-      "role": "user"
-    },
-    {
-      "id": "4094",
-      "fullName": "OUCHIN MUSTAPHA",
-      "address": "DMPODKEO",
-      "email": "XJIOE@GMAIL.CXOM",
-      "password": "OUCHINDIB",
+      "id": "df4f",
+      "fullName": "mohamed while true",
+      "address": "while true ",
+      "email": "while@true.com",
+      "password": "whiletrue123",
       "role": "user"
     }
   ]
