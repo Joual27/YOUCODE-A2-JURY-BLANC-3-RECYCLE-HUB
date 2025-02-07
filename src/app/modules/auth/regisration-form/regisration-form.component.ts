@@ -19,6 +19,7 @@ export class RegisrationFormComponent {
       address : null
     }
   );
+  shownSuccessMsg = signal<boolean>(false);
   registrationForm : FormGroup ;
   private store = inject(Store);
   private fb = inject(FormBuilder);
@@ -44,7 +45,12 @@ export class RegisrationFormComponent {
     }
     else{
       this.store.dispatch(authActions.validForm(this.registrationForm.value));
-      this.resetValidationErrs
+      this.shownSuccessMsg.set(true);
+      setTimeout(() => {
+        this.shownSuccessMsg.set(false);
+        window.location.href = "http://localhost:4200/requests"
+      } , 3000)
+      this.resetValidationErrs();
     }
   }
 

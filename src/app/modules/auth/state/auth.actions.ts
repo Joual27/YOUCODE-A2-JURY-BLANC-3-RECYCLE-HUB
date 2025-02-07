@@ -1,9 +1,34 @@
 import { createAction, props } from "@ngrx/store";
 import { RegistrationData } from "../models/auth.models";
+import { User } from "../../../shared/models";
 
 export const validForm = createAction(
-    "[Auth Popup] valid auth form",
+    "[Auth Popup] valid registration form",
     props<RegistrationData>()
 );
 
 export const clearAuthFormErrors = createAction("[Auth Popup] clear auth form errors ");
+
+export const registrationSuccess = createAction(
+    "[Auth Popup] registration successfully",
+    props<RegistrationData>()
+)
+
+export const regisrationFailure = createAction(
+    "[Auth Popup] Failure In registration",
+    props<{error : string}>()
+)
+
+export const validLoginForm = createAction(
+    "[Auth Popup] valid login form"
+)
+
+export const loginSuccess = createAction(
+    "[Auth Popup] login successfully",
+    props<User>()
+)
+
+export const loginFailure = createAction(
+    "[Auth Popup] login In registration",
+    props<{error : string}>()
+)
