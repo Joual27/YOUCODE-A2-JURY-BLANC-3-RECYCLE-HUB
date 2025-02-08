@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { AuthErrors } from '../../modules/auth/models/auth.models';
 import { User } from '../models';
 import { HttpClient } from '@angular/common/http';
-import { environments } from '../../environments/environments';
 import { catchError, map, Observable, of } from 'rxjs';
+import { environments } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'

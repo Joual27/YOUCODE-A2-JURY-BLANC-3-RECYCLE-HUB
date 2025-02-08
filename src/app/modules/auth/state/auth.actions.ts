@@ -26,10 +26,10 @@ export const validLoginForm = createAction(
 
 export const loginSuccess = createAction(
     "[Auth Popup] login successfully",
-    props<User>()   
+    props<{ user: User }>()   
 )
 
 export const loginFailure = createAction(
-    "[Auth Popup] login In registration",
+    "[Auth Popup] login In Failure",
     props<{error : string}>()
 )

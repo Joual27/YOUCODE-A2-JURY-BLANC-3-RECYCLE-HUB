@@ -10,11 +10,12 @@ export const authReducer = createReducer(
     on(authActions.registrationFailure , (state) => ({
         ...state
     })),
-    on(authActions.loginSuccess , (state , action) => ({
-        ...state ,
-        shownLoginFailureMsg : false
-    })),
-    on(authActions.loginFailure , (state) => ({
+    on(authActions.loginSuccess, (state, { user }) => ({
+        ...state,
+        shownLoginFailureMsg: false,
+        signedInUser: user 
+      })),
+    on(authActions.loginFailure , (state ) => ({
         ...state,
         shownLoginFailureMsg : true,
     }))

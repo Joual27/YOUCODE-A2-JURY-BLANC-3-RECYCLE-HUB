@@ -15,29 +15,34 @@ export class AuthEffect {
             ofType(authActions.validForm),
             mergeMap(({ fullName, address, email, password , role }) =>
                 this.authService.register({ fullName, address, email, password , role}).pipe(
-                  map((res) => authActions.registrationSuccess(res)),
+                  map((res) => 
+                   {
+                    this.authService.setLoggedInUser(res);
+                    return authActions.registrationSuccess(res)
+                   }
+                ),
                   catchError((err) => of(authActions.registrationFailure({ error: err.message })))
                 )
             )
         )   
     )
 
-   authenticateUser$ = createEffect(() => 
-      this.actions$.pipe(
-        ofType(authActions.validLoginForm),
-        mergeMap((data) => 
-            this.authService.login(data.email , data.password).pipe(
-                map((res) => {
-                    if (!res || Object.keys(res).length === 0) {
-                      return authActions.loginFailure({ error: 'Invalid Credentials' });
-                    } else {
-                      this.authService.setLoggedInUser(res);
-                      return authActions.loginSuccess(res);
-                    }
-                  }),   
-                catchError(err => of(authActions.loginFailure(err.message)))
+    authenticateUser$ = createEffect(() => 
+        this.actions$.pipe(
+          ofType(authActions.validLoginForm),
+          mergeMap(({ email, password }) => 
+            this.authService.login(email, password).pipe(
+              map(users => {
+                if (!users || users.length === 0) {
+                  return authActions.loginFailure({ error: 'Invalid Credentials' });
+                }
+                const user = users[0];
+                this.authService.setLoggedInUser(user);
+                return authActions.loginSuccess({ user });
+              }),
+              catchError(err => of(authActions.loginFailure({ error: err.message })))
             )
+          )
         )
-      )
-   )
+    );
 }

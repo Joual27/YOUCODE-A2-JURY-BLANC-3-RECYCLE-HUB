@@ -40,8 +40,10 @@ export class AuthService {
     return this.http.post<RegistrationData>(`${this.apiUrl}/users` , payload);
   }
 
-  login(email : string , password : string) : Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/users?email=${email}&password=${password}`)
+  login(email: string, password: string): Observable<User[]> {
+    return this.http.get<User[]>(
+      `${this.apiUrl}/users?email=${email}&password=${password}`
+    );
   }
 
 }

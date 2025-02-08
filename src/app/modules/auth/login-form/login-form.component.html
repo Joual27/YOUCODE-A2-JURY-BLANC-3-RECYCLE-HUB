@@ -1,6 +1,9 @@
 
-@if (invalidLoginAttemptMsg$ | async) {
+@if (shownLoginFailureMsg()) {
     <p class="text-center font-bold text-[.85rem] text-red-600 ">Invalid Credentials . TRY AGAIN ! </p>
+}
+@if (shownLoginSuccessMsg()) {
+    <p class="text-center font-bold text-[.85rem] text-primary-green ">Signed in Succesfully ! Redirecting ... </p>
 }
 <form class="py-3" [formGroup]="loginForm" (submit)="onLoginFormSubmit($event)">
     <div class="flex flex-col gap-2 mb-5">
