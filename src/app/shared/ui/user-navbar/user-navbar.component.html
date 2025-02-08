@@ -26,7 +26,7 @@
       </ng-container>
       <ng-container *ngIf="user.role === 'user'">
         <a routerLink="/user/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100  cursor-pointer" (click)="hidePopup()">Profile</a>
-        <a routerLink="/user/requests" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Make Requests</a>
+        <a routerLink="/user/requests/create" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Make Requests</a>
         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">My Requests</a>
         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()"> My Points</a>
       </ng-container>

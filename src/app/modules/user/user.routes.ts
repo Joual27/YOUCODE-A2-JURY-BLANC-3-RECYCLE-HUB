@@ -5,10 +5,10 @@ export const USER_ROUTES: Routes = [
     path: '',
     loadComponent: () => import('./components/request-page/request-page.component').then(m => m.RequestPageComponent)
   },
-//   {
-//     path: 'new',
-//     loadComponent: () => import('./requests/create-request/create-request.component').then(m => m.CreateRequestComponent)
-//   },
+  {
+    path: 'create',
+    loadComponent: () => import('./components/collection-request/collection-request.component').then(m => m.CollectionRequestComponent)
+  },
 //   {
 //     path: 'edit/:id',
 //     loadComponent: () => import('./requests/edit-request/edit-request.component').then(m => m.EditRequestComponent)
