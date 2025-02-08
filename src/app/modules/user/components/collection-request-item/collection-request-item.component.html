@@ -1,0 +1,17 @@
+<div class="flex justify-between items-center mb-2">
+    <span class="font-semibold">Request ID: {{ request.id }}</span>
+    <span [class]="'px-2 py-1 rounded-full text-sm ' + getStatusClass(request.status)">
+      {{ request.status }}
+    </span>
+  </div>
+  <p><strong>Collection Address:</strong> {{ request.collectionAddress }}</p>
+  <p><strong>Collection Date & Time:</strong> {{ request.collectionDateTime}}</p>
+  <p><strong>Points:</strong> {{ request.points }}</p>
+  <div class="mt-2">
+    <h4 class="font-semibold">Waste Items:</h4>
+    <ul class="list-disc list-inside">
+      <li *ngFor="let waste of request.wastes">
+        {{ waste.type }}: {{ waste.weight }} kg
+      </li>
+    </ul>
+</div>
