@@ -27,7 +27,7 @@ export class RoleGuard implements CanActivate {
           return true;
         }
 
-        return this.router.createUrlTree([user.role === 'user' ? '/requests' : '/dashboard']);
+        return this.router.createUrlTree([user.role === 'user' ? 'user/requests' : 'collector/dashboard']);
       })
     );
   }

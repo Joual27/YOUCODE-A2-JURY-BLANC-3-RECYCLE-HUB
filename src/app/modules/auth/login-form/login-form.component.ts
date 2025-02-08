@@ -66,7 +66,7 @@ export class LoginFormComponent implements OnDestroy {
     ).subscribe(user => {   
       this.shownLoginSuccessMsg.set(true);
       setTimeout(() => {
-        const redirectPath = user!.role === 'user' ? '/requests' : '/dashboard';
+        const redirectPath = user!.role === 'user' ? 'user/requests' : 'collector/dashboard';
         this.router.navigate([redirectPath]);
         this.shownLoginSuccessMsg.set(false);
       }, 2500);
@@ -87,5 +87,5 @@ export class LoginFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  
+
 }

@@ -20,16 +20,17 @@
   
   <div *ngIf="showPopup" class="absolute right-[11%] mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
     <ng-container *ngIf="user$ | async as user">
-      <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
       <ng-container *ngIf="user.role === 'collector'">
-        <a routerLink="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Browse Requests</a>
+        <a routerLink="/collector/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Profile</a>
+        <a routerLink="/collector/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Browse Requests</a>
       </ng-container>
       <ng-container *ngIf="user.role === 'user'">
-        <a routerLink="/requests" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Make Requests</a>
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Requests</a>
-        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Points</a>
+        <a routerLink="/user/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100  cursor-pointer" (click)="hidePopup()">Profile</a>
+        <a routerLink="/user/requests" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Make Requests</a>
+        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">My Requests</a>
+        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()"> My Points</a>
       </ng-container>
-      <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Logout</a>
+      <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" (click)="hidePopup()">Logout</a>
     </ng-container>
   </div>
 </nav>

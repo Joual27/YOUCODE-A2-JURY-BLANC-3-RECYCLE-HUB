@@ -1,0 +1,58 @@
+
+@if (shownSuccessMsg()) {
+    <div class="w-[300px] h-[50px] bg-primary-green text-white font-semibold rounded-2xl flex items-center justify-center text-[.85rem] mb-4 mx-auto">
+        <p>Profile Updated Successfully</p>
+    </div>  
+}
+<div class="w-[70%] mx-auto p-4 mt-20">
+    <div class="bg-secondary-b rounded-lg shadow p-6">
+      <h2 class="text-2xl font-bold mb-6 underline">Update Profile</h2>
+      
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="grid grid-cols-1 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-secondary-green">Full Name:</label>
+            <input formControlName="fullName" 
+                   class="mt-1 px-3 py-1 block w-full rounded-md border-secondary-green shadow-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-green"
+                   readonly
+                   >
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-secondary-green">Email:</label>
+            <input formControlName="email" 
+            class="mt-1 px-3 py-1 block w-full rounded-md border-secondary-green shadow-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-green"
+                   readonly
+                   >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-secondary-green">Password:</label>
+            <input type="password"
+                   formControlName="password" 
+                   class="mt-1 px-3 py-1 block w-full rounded-md border-secondary-green shadow-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-green">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-secondary-green">Address:</label>
+            <textarea formControlName="address" 
+            class="mt-1 px-3 py-1 block w-full rounded-md border-secondary-green shadow-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-green">
+            </textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-6">
+          <button type="button" 
+                  (click)="onDeleteAccount()"
+                  class="px-4 py-2 bg-red-600 text-[.9rem] font-medium text-white rounded-md hover:opacity-80 cursor-pointer">
+            Delete Account
+          </button>
+          <button type="submit" 
+                  [disabled]="!profileForm.valid || !profileForm.dirty"
+                  class="px-4 py-2 bg-primary-green text-[.9rem] font-medium text-white rounded-md hover:opacity-80 cursor-pointer">
+            Save Changes
+          </button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
