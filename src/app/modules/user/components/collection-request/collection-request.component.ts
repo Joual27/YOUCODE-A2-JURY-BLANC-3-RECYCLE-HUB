@@ -1,13 +1,15 @@
-import { Component, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Request, User, WasteItem, WasteType } from '../../../../shared/models';
 import { Store } from '@ngrx/store';
 import { CollectionRequestService } from '../../services/collection-request.service';
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-collection-request',
-  imports: [],
+  imports: [ReactiveFormsModule , CommonModule],
   templateUrl: './collection-request.component.html',
   styleUrl: './collection-request.component.css'
 })
@@ -17,9 +19,13 @@ export class CollectionRequestComponent {
   wasteTypes: WasteType[] = ['plastic', 'glass', 'paper', 'metal'];
   totalWeight: number = 0;
   totalPoints: number = 0;
+  shownErrorMsg = signal<boolean>(false);
+  erroMsg : string = "";
+  shownSuccessMsg = signal<boolean>(false);
   private store = inject(Store);
   private fb = inject(FormBuilder);
   private collectionRequestService = inject(CollectionRequestService);
+  private router = inject(Router);
 
   constructor(  ) {
     this.requestForm = this.fb.group({
@@ -77,24 +83,34 @@ export class CollectionRequestComponent {
 
   onSubmit() {
     if (this.requestForm.valid && this.currentUser) {
-      const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
-      
-      const request: Partial<Request> = {
-        userId: this.currentUser.id!,
-        wastes: wasteItems,
-        collectionAddress: this.requestForm.get('collectionAddress')?.value,
-        collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
-        status: 'pending',
-        points: this.totalPoints
-      };
+      if(this.totalWeight >= 1 && this.totalWeight <= 10){
+        const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
+        const request: Partial<Request> = {
+          userId: this.currentUser.id!,
+          wastes: wasteItems,
+          collectionAddress: this.requestForm.get('collectionAddress')?.value,
+          collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
+          status: 'pending',
+          points: this.totalPoints
+        };
 
-      this.collectionRequestService.createRequest(request).subscribe({
-        next: (createdRequest) => {
-          console.log('Request created successfully', createdRequest);
-          // Reset form or navigate to requests list
-        },
-        error: (error) => console.error('Error creating request:', error)
-      });
+        this.collectionRequestService.createRequest(request).subscribe({
+          next: (createdRequest) => {
+            this.shownSuccessMsg.set(true);
+            setTimeout(() => {
+              this.shownSuccessMsg.set(false);
+              this.router.navigate(["/user/requests"])
+            } , 2500)
+            console.log('Request created successfully', createdRequest);
+          },
+          error: (error) => console.error('Error creating request:', error)
+        });
+      }else{
+        this.shownErrorMsg.set(true);
+        setTimeout(() => {
+          this.shownErrorMsg.set(false);
+        } , 2500)
+      }
     }
   }
 }
