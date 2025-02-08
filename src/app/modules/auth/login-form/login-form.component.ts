@@ -73,8 +73,6 @@ export class LoginFormComponent implements OnDestroy {
     });
   }
   
-  
-
   private resetValidationErrs() : void {
     this.authErrors.set({
       fullName : null,
@@ -89,6 +87,5 @@ export class LoginFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-
-
+  
 }
