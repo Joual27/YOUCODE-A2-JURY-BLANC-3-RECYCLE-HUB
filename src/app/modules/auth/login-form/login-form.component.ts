@@ -1,24 +1,32 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ValidationService } from '../../../shared/services/validation.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthErrors } from '../models/auth.models';
 import { Store } from '@ngrx/store';
 import { validLoginForm } from '../state/auth.actions';
-import { selectLoginErrorMsg } from '../state/auth.selectors';
-import { AsyncPipe } from '@angular/common';
+import { selectLoginErrorMsg, selectSignedInUser } from '../state/auth.selectors';
+import { filter, Observable, Subject, take, takeUntil } from 'rxjs';
+import { User } from '../../../shared/models';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login-form',
-  imports: [AsyncPipe , ReactiveFormsModule],
+  imports: [ReactiveFormsModule , CommonModule],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css'
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnDestroy {
   loginForm : FormGroup;
+  private router = inject(Router);
   validationService = inject(ValidationService);
   private fb = inject(FormBuilder);
+  signedInUser$ : Observable<User | null>;
   private store = inject(Store);
-  invalidLoginAttemptMsg$ = this.store.select(selectLoginErrorMsg);
+  shownLoginSuccessMsg = signal<boolean>(false);
+  shownLoginFailureMsg = signal<boolean>(false);
+  private destroy$ = new Subject<void>();
+
   authErrors = signal<AuthErrors>(
     {
       fullName : null,
@@ -33,21 +41,39 @@ export class LoginFormComponent {
       email : ["" , [Validators.required , Validators.email]],
       password : ["" , Validators.required]
     })
-    
+    this.signedInUser$ = this.store.select(selectSignedInUser);
+    this.store.select(selectLoginErrorMsg)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((errorMsg) => {
+        this.shownLoginFailureMsg.set(Boolean(errorMsg)); 
+      });
   }
 
-  onLoginFormSubmit(event : Event) : void {
+  onLoginFormSubmit(event: Event): void {
     event.preventDefault();
-    if(this.loginForm.invalid){
-      let errors =  this.validationService.getFormErrors(this.loginForm);
+
+    if (this.loginForm.invalid) {
+      const errors = this.validationService.getFormErrors(this.loginForm);
       this.authErrors.set(errors);
-    }else{
-      this.store.dispatch(validLoginForm(this.loginForm.value));
-      console.log(this.loginForm.value);
-      
-      this.resetValidationErrs();
+      return;
     }
+    this.store.dispatch(validLoginForm(this.loginForm.value));
+    this.resetValidationErrs();
+
+    this.signedInUser$.pipe(
+      filter(user =>user !== null),
+      take(1)
+    ).subscribe(user => {   
+      this.shownLoginSuccessMsg.set(true);
+      setTimeout(() => {
+        const redirectPath = user!.role === 'user' ? '/requests' : '/dashboard';
+        this.router.navigate([redirectPath]);
+        this.shownLoginSuccessMsg.set(false);
+      }, 2500);
+    });
   }
+  
+  
 
   private resetValidationErrs() : void {
     this.authErrors.set({
@@ -57,4 +83,12 @@ export class LoginFormComponent {
       password : null
     })
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+
+
 }
