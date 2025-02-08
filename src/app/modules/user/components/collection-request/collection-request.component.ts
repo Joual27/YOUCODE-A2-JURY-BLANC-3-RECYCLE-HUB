@@ -20,7 +20,7 @@ export class CollectionRequestComponent {
   totalWeight: number = 0;
   totalPoints: number = 0;
   shownErrorMsg = signal<boolean>(false);
-  erroMsg : string = "";
+  errorMsg : string = "";
   shownSuccessMsg = signal<boolean>(false);
   private store = inject(Store);
   private fb = inject(FormBuilder);
@@ -81,36 +81,90 @@ export class CollectionRequestComponent {
     }, 0);
   }
 
-  onSubmit() {
-    if (this.requestForm.valid && this.currentUser) {
-      if(this.totalWeight >= 1 && this.totalWeight <= 10){
-        const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
-        const request: Partial<Request> = {
-          userId: this.currentUser.id!,
-          wastes: wasteItems,
-          collectionAddress: this.requestForm.get('collectionAddress')?.value,
-          collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
-          status: 'pending',
-          points: this.totalPoints
-        };
 
-        this.collectionRequestService.createRequest(request).subscribe({
-          next: (createdRequest) => {
-            this.shownSuccessMsg.set(true);
-            setTimeout(() => {
-              this.shownSuccessMsg.set(false);
-              this.router.navigate(["/user/requests"])
-            } , 2500)
-            console.log('Request created successfully', createdRequest);
-          },
-          error: (error) => console.error('Error creating request:', error)
-        });
-      }else{
-        this.shownErrorMsg.set(true);
-        setTimeout(() => {
-          this.shownErrorMsg.set(false);
-        } , 2500)
+  validateDateTime(): boolean {
+    const collectionDateTime = new Date(this.requestForm.get('collectionDateTime')?.value);
+    const today = new Date();
+    const tomorrow = new Date(today.setDate(today.getDate() + 1));
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const isAfterTomorrow = collectionDateTime >= tomorrow;
+    const hours = collectionDateTime.getHours();
+    const isWithinTime = hours >= 9 && hours <= 18;
+
+    if (!isAfterTomorrow) {
+      this.errorMsg = "Collection date must be starting from tomorrow.";
+      return false;
+    }
+    if (!isWithinTime) {
+      this.errorMsg = "Collection time must be between 9 AM and 6 PM.";
+      return false;
+    }
+    return true;
+  }
+ 
+
+  onSubmit(): void {
+    if (this.requestForm.valid && this.currentUser) {
+      if (this.totalWeight >= 1 && this.totalWeight <= 10) {
+  
+        if (!this.validateDateTime()) {
+          this.showErrorMessage("Collection date must start from tomorrow and time between 9 AM and 6 PM.");
+          return;
+        }
+  
+        if (this.currentUser?.id) {
+          this.collectionRequestService.validRequestsNumber(this.currentUser.id).subscribe(isValid => {
+            if (!isValid) {
+              this.showErrorMessage("You already have 3 requests that aren't treated yet!");
+              return;
+            }
+  
+            const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
+            const request: Partial<Request> = {
+              userId: this.currentUser?.id!,
+              wastes: wasteItems,
+              collectionAddress: this.requestForm.get('collectionAddress')?.value,
+              collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
+              status: 'pending',
+              points: this.totalPoints
+            };
+  
+            this.collectionRequestService.createRequest(request).subscribe({
+              next: (createdRequest) => {
+                this.showSuccessMessage();
+                setTimeout(() => {
+                  this.router.navigate(["/user/requests"]);
+                }, 2500);
+                console.log('Request created successfully', createdRequest);
+              },
+              error: (error) => {
+                console.error('Error creating request:', error);
+                this.showErrorMessage("Failed to create the request.");
+              }
+            });
+          });
+        }
+      } else {
+        this.showErrorMessage("Overall weight must be between 1 and 10.");
       }
     }
   }
+  
+  showErrorMessage(message: string): void {
+    this.errorMsg = message;
+    this.shownErrorMsg.set(true);
+    setTimeout(() => {
+      this.shownErrorMsg.set(false);
+      this.errorMsg = "";
+    }, 3500);
+  }
+  
+  showSuccessMessage(): void {
+    this.shownSuccessMsg.set(true);
+    setTimeout(() => {
+      this.shownSuccessMsg.set(false);
+    }, 2500);
+  }
+  
 }

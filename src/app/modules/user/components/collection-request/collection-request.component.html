@@ -1,7 +1,7 @@
 
 @if (shownSuccessMsg()) {
     <div class="w-[300px] h-[50px] bg-primary-green text-white font-semibold rounded-2xl flex items-center justify-center text-[.85rem] mb-4 mx-auto">
-        <p>Profile Updated Successfully</p>
+        <p>Request Created Successfully</p>
     </div>  
 }
 <div class="w-[60%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
@@ -28,8 +28,8 @@
       </div>
 
       @if (shownErrorMsg()) {
-        <div class="w-full flex justify-end text-red-500 font-semibold underline">
-            <p>Overall weight must be between 1 and 10 </p>
+        <div class="w-full flex justify-end text-red-500 font-semibold text-[.9rem] underline">
+            <p>{{errorMsg}}</p>
           </div>
       }
 
