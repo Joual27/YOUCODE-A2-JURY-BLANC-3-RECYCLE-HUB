@@ -33,3 +33,12 @@ export const loginFailure = createAction(
     "[Auth Popup] login In Failure",
     props<{error : string}>()
 )
+
+export const profileUpdated = createAction(
+    "[User Profile] Profile updated",
+    props<{ user: User }>() 
+)
+
+export const logout = createAction(
+    "[Auth] logout"
+)

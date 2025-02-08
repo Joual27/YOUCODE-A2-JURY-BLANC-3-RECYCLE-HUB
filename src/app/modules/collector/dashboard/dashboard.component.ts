@@ -3,7 +3,7 @@ import { UserNavbarComponent } from "../../../shared/ui/user-navbar/user-navbar.
 
 @Component({
   selector: 'app-dashboard',
-  imports: [UserNavbarComponent],
+  imports: [],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

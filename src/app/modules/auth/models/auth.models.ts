@@ -10,7 +10,7 @@ export interface AuthErrors {
 
 
 export interface RegistrationData {
-    id ?: number,
+    id ?: string,
     fullName : string ,
     email : string ,
     password : string ,

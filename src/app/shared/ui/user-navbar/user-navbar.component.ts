@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { User } from '../../../shared/models';
 import { selectSignedInUser } from '../../../modules/auth/state/auth.selectors';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/service/auth.service';
 import { AppState } from '../../../core/store/app.state';
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-user-navbar',
   templateUrl: './user-navbar.component.html',
   styleUrls: ['./user-navbar.component.css'],
-  imports : [CommonModule]
+  imports : [CommonModule , RouterLink]
 })
 export class UserNavbarComponent implements OnInit {
   user$: Observable<User | null>;
@@ -30,6 +30,10 @@ export class UserNavbarComponent implements OnInit {
 
   togglePopup(): void {
     this.showPopup = !this.showPopup;
+  }
+
+  hidePopup() : void {
+    this.showPopup = false;
   }
 
   logout(): void {
