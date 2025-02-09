@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environments } from '../../../environments/environments';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Request } from '../../../shared/models';
 
 @Injectable({
@@ -19,11 +19,22 @@ export class CollectionRequestService {
     return this.http.get<Request[]>(`${this.apiUrl}/requests?userId=${userId}`);
   }
 
-  updateRequest(requestId: string, updates: Partial<Request>): Observable<Request> {
-    return this.http.patch<Request>(`${this.apiUrl}/requests/${requestId}`, updates);
+  updateRequest(request: Request): Observable<Request> {
+    return this.http.put<Request>(`${this.apiUrl}/requests/${request.id}`, request);
   }
 
   deleteRequest(requestId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/requests/${requestId}`);
   }
+
+  validRequestsNumber(userId: string): Observable<boolean> {
+  return this.getUserRequests(userId).pipe(
+    map(requests => {
+      const pendingOrRejected = requests.filter(
+        request => request.status === 'pending' || request.status === 'rejected'
+      );
+      return pendingOrRejected.length < 3;
+    })
+  );
+}
 }

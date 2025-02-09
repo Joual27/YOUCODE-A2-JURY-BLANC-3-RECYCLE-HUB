@@ -1,33 +1,36 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Request, User, WasteItem, WasteType } from '../../../../shared/models';
-import { Store } from '@ngrx/store';
-import { CollectionRequestService } from '../../services/collection-request.service';
-import { selectSignedInUser } from '../../../auth/state/auth.selectors';
+import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Request, WasteType, WasteItem, User } from '../../../../shared/models';
+import { CollectionRequestService } from '../../services/collection-request.service';
+import { Store } from '@ngrx/store';
+import { selectSignedInUser } from '../../../auth/state/auth.selectors';
 
 @Component({
-  selector: 'app-collection-request',
-  imports: [ReactiveFormsModule , CommonModule],
-  templateUrl: './collection-request.component.html',
-  styleUrl: './collection-request.component.css'
+  selector: 'app-request-update-popup',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './request-update-popup.component.html',
+  styleUrls: ['./request-update-popup.component.css']
 })
-export class CollectionRequestComponent {
+export class RequestUpdatePopupComponent implements OnInit {
+  @Input() request!: Request;
+  @Output() updateRequest = new EventEmitter<Request>();
+  @Output() closePopup = new EventEmitter<void>();
   requestForm: FormGroup;
-  currentUser: User | null = null;
   wasteTypes: WasteType[] = ['plastic', 'glass', 'paper', 'metal'];
   totalWeight: number = 0;
   totalPoints: number = 0;
+  showDeleteConfirmation: boolean = false;
   shownErrorMsg = signal<boolean>(false);
-  errorMsg : string = "";
+  errorMsg: string = "";
   shownSuccessMsg = signal<boolean>(false);
-  private store = inject(Store);
-  private fb = inject(FormBuilder);
-  private collectionRequestService = inject(CollectionRequestService);
-  private router = inject(Router);
+  currentUser: User | null = null;
 
-  constructor(  ) {
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+
+  constructor() {
     this.requestForm = this.fb.group({
       wastes: this.fb.array([]),
       collectionAddress: ['', Validators.required],
@@ -39,24 +42,28 @@ export class CollectionRequestComponent {
     this.store.select(selectSignedInUser).subscribe(user => {
       if (user) {
         this.currentUser = user;
-        this.requestForm.patchValue({
-          collectionAddress: user.address
-        });
       }
     });
-
-    this.initWastesFormArray();
+    this.initForm();
+    this.calculateTotalWeight();
+    this.calculatePoints();
   }
 
   get wastes() {
     return this.requestForm.get('wastes') as FormArray;
   }
 
-  initWastesFormArray() {
+  initForm() {
+    this.requestForm.patchValue({
+      collectionAddress: this.request.collectionAddress,
+      collectionDateTime: this.request.collectionDateTime
+    });
+
     this.wasteTypes.forEach(type => {
+      const existingWaste = this.request.wastes.find(w => w.type === type);
       this.wastes.push(this.fb.group({
         type: type,
-        weight: [0, [Validators.required, Validators.min(0)]]
+        weight: [existingWaste ? existingWaste.weight : 0, [Validators.required, Validators.min(0)]]
       }));
     });
   }
@@ -81,7 +88,6 @@ export class CollectionRequestComponent {
     }, 0);
   }
 
-
   validateDateTime(): boolean {
     const collectionDateTime = new Date(this.requestForm.get('collectionDateTime')?.value);
     const today = new Date();
@@ -102,55 +108,30 @@ export class CollectionRequestComponent {
     }
     return true;
   }
- 
 
-  onSubmit(): void {
+  onSubmit() {
     if (this.requestForm.valid && this.currentUser) {
       if (this.totalWeight >= 1 && this.totalWeight <= 10) {
-  
         if (!this.validateDateTime()) {
-          this.showErrorMessage("Collection date must start from tomorrow and time between 9 AM and 6 PM.");
+          this.showErrorMessage("Collection date must start from tomorrow , between 9 AM and 6 PM.");
           return;
         }
-  
-        if (this.currentUser?.id) {
-          this.collectionRequestService.validRequestsNumber(this.currentUser.id).subscribe(isValid => {
-            if (!isValid) {
-              this.showErrorMessage("You already have 3 requests that aren't treated yet!");
-              return;
-            }
-  
-            const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
-            const request: Partial<Request> = {
-              userId: this.currentUser?.id!,
-              wastes: wasteItems,
-              collectionAddress: this.requestForm.get('collectionAddress')?.value,
-              collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
-              status: 'pending',
-              points: this.totalPoints
-            };
-  
-            this.collectionRequestService.createRequest(request).subscribe({
-              next: (createdRequest) => {
-                this.showSuccessMessage();
-                setTimeout(() => {
-                  this.router.navigate(["/user/requests"]);
-                }, 2500);
-                console.log('Request created successfully', createdRequest);
-              },
-              error: (error) => {
-                console.error('Error creating request:', error);
-                this.showErrorMessage("Failed to create the request.");
-              }
-            });
-          });
-        }
+        const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
+        const updatedRequest: Request = {
+          ...this.request,
+          wastes: wasteItems,
+          collectionAddress: this.requestForm.get('collectionAddress')?.value,
+          collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
+          points: this.totalPoints
+        };
+        this.updateRequest.emit(updatedRequest);
+        this.showSuccessMessage();
       } else {
         this.showErrorMessage("Overall weight must be between 1 and 10.");
       }
     }
   }
-  
+
   showErrorMessage(message: string): void {
     this.errorMsg = message;
     this.shownErrorMsg.set(true);
@@ -159,12 +140,15 @@ export class CollectionRequestComponent {
       this.errorMsg = "";
     }, 3500);
   }
-  
+
   showSuccessMessage(): void {
     this.shownSuccessMsg.set(true);
     setTimeout(() => {
       this.shownSuccessMsg.set(false);
     }, 2500);
   }
-  
+
+  close() {
+    this.closePopup.emit();
+  }
 }
