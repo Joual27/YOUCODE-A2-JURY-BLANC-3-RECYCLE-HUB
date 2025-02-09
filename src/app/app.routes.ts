@@ -27,6 +27,10 @@ export const routes: Routes = [
               (m) => m.ProfileComponent
             ),
         },
+        {
+          path: 'points',
+          loadComponent: () => import('./modules/user/components/points-conversion/points-conversion.component').then(m => m.PointsConversionComponent)
+        }
       ],
     },
     {

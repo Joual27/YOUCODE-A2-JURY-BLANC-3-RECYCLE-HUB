@@ -17,14 +17,14 @@
 <div class="w-[70%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl relative">
     <app-title title="My Collection Requests"/>
     
-    <div class="flex flex-col gap-2 " [ngClass]="collectorRequests.length === 0 ? 'mt-12' : ''">
+    <div class="flex flex-col gap-2 mt-12">
       @if (collectorRequests.length === 0) {
         <div class="text-center text-gray-500">
           You have no active collection requests.
         </div>
       }
     
-      <div *ngFor="let request of collectorRequests" class="mb-6 p-4 border rounded-lg mt-16">
+      <div *ngFor="let request of collectorRequests" class="mb-6 p-4 border rounded-lg ">
         <div class="flex justify-between items-center mb-2">
           <span class="text-secondary-green font-semibold text-[.9rem]">Request ID: {{ request.id }}</span>
           <span [ngClass]="{'bg-blue-200 text-blue-800': request.status === 'occupied', 'bg-purple-200 text-purple-800': request.status === 'in_progress'}" class="px-2 py-1 rounded-full text-sm">
