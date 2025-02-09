@@ -19,8 +19,8 @@ export class CollectionRequestService {
     return this.http.get<Request[]>(`${this.apiUrl}/requests?userId=${userId}`);
   }
 
-  updateRequest(requestId: string, updates: Partial<Request>): Observable<Request> {
-    return this.http.patch<Request>(`${this.apiUrl}/requests/${requestId}`, updates);
+  updateRequest(request: Request): Observable<Request> {
+    return this.http.put<Request>(`${this.apiUrl}/requests/${request.id}`, request);
   }
 
   deleteRequest(requestId: string): Observable<void> {

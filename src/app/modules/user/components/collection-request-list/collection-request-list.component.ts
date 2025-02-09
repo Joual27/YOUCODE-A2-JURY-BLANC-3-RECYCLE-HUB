@@ -38,14 +38,24 @@ export class CollectionRequestListComponent {
     }
   }
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'pending': return 'bg-yellow-200 text-yellow-800';
-      case 'occupied': return 'bg-blue-200 text-blue-800';
-      case 'in_progress': return 'bg-purple-200 text-purple-800';
-      case 'completed': return 'bg-green-200 text-green-800';
-      case 'rejected': return 'bg-red-200 text-red-800';
-      default: return 'bg-gray-200 text-gray-800';
-    }
+  updateRequest(updatedRequest: Request) {
+    this.collectionRequestService.updateRequest(updatedRequest).subscribe({
+      next: (request) => {
+        const index = this.requests.findIndex(r => r.id === request.id);
+        if (index !== -1) {
+          this.requests[index] = request;
+        }
+      },
+      error: (error) => console.error('Error updating request:', error)
+    });
+  }
+
+  deleteRequest(requestId: string) {
+    this.collectionRequestService.deleteRequest(requestId).subscribe({
+      next: () => {
+        this.requests = this.requests.filter(r => r.id !== requestId);
+      },
+      error: (error) => console.error('Error deleting request:', error)
+    });
   }
 }

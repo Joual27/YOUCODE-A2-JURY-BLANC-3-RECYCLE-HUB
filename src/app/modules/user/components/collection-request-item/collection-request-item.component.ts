@@ -1,15 +1,23 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Request } from '../../../../shared/models';
 import { CommonModule } from '@angular/common';
+import { RequestUpdatePopupComponent } from '../request-update-popup/request-update-popup.component';
+import { ConfirmationModalComponent } from '../../../../shared/ui/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-collection-request-item',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RequestUpdatePopupComponent, ConfirmationModalComponent],
   templateUrl: './collection-request-item.component.html',
-  styleUrl: './collection-request-item.component.css'
+  styleUrls: ['./collection-request-item.component.css']
 })
 export class CollectionRequestItemComponent {
-  @Input() request !: Request;
+  @Input() request!: Request;
+  @Output() updateRequest = new EventEmitter<Request>();
+  @Output() deleteRequest = new EventEmitter<string>();
+
+  showUpdatePopup = false;
+  showDeleteConfirmation = false;
 
   getStatusClass(status: string): string {
     switch (status) {
@@ -20,5 +28,31 @@ export class CollectionRequestItemComponent {
       case 'rejected': return 'bg-red-200 text-red-800';
       default: return 'bg-gray-200 text-gray-800';
     }
+  }
+
+  openUpdatePopup() {
+    this.showUpdatePopup = true;
+  }
+
+  closeUpdatePopup() {
+    this.showUpdatePopup = false;
+  }
+
+  onUpdateRequest(updatedRequest: Request) {
+    this.updateRequest.emit(updatedRequest);
+    this.closeUpdatePopup();
+  }
+
+  openDeleteConfirmation() {
+    this.showDeleteConfirmation = true;
+  }
+
+  closeDeleteConfirmation() {
+    this.showDeleteConfirmation = false;
+  }
+
+  confirmDelete() {
+    this.deleteRequest.emit(this.request.id);
+    this.closeDeleteConfirmation();
   }
 }
