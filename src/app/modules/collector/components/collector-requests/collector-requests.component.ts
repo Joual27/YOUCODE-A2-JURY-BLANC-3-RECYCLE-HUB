@@ -1,16 +1,17 @@
 // src/app/modules/collection/components/collector-requests/collector-requests.component.ts
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Request, User, WasteItem } from '../../../../shared/models';
 import { Store } from '@ngrx/store';
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CollectionRequestService } from '../../../user/services/collection-request.service';
+import { TitleComponent } from "../../../../shared/ui/title/title.component";
 
 @Component({
   selector: 'app-collector-requests',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TitleComponent],
   templateUrl: './collector-requests.component.html',
   styleUrls: ['./collector-requests.component.css']
 })
@@ -19,6 +20,10 @@ export class CollectorRequestsComponent implements OnInit {
   currentUser: User | null = null;
   selectedRequest: Request | null = null;
   updateForm: FormGroup;
+  shownSuccessMsg = signal<boolean>(false);
+  shownRejectionMsg = signal<boolean>(false);
+  errorMsg = signal<string>("");
+  successMsg = signal<string>("");
   private collectionRequestService = inject(CollectionRequestService);
   private store  = inject(Store);
   private fb = inject(FormBuilder);
@@ -54,6 +59,12 @@ export class CollectorRequestsComponent implements OnInit {
       if (!hasInProgress) {
         this.collectionRequestService.updateRequestStatus(request.id, 'in_progress').subscribe({
           next: (updatedRequest) => {
+            this.shownSuccessMsg.set(true);
+            this.successMsg.set("Collection Request Marked In Progress Successfully !");
+            setTimeout(() => {
+              this.shownSuccessMsg.set(false);
+              this.successMsg.set("");
+            } , 2500)
             const index = this.collectorRequests.findIndex(r => r.id === updatedRequest.id);
             if (index !== -1) {
               this.collectorRequests[index] = updatedRequest;
@@ -62,7 +73,12 @@ export class CollectorRequestsComponent implements OnInit {
           error: (error) => console.error('Error marking request as in progress:', error)
         });
       } else {
-        alert('You already have a request in progress. Please complete or reject it before starting a new one.');
+        this.errorMsg.set("You can have only one request in progress !");
+        this.shownRejectionMsg.set(true);
+        setTimeout(() => {
+          this.shownRejectionMsg.set(false);
+          this.errorMsg.set("");
+        } , 2500)
       }
     });
   }
@@ -93,6 +109,12 @@ export class CollectorRequestsComponent implements OnInit {
           this.collectionRequestService.updateUserPoints(validatedRequest.userId, pointsToAdd).subscribe({
             next: () => {
               this.loadCollectorRequests();
+              this.shownSuccessMsg.set(true);
+              this.successMsg.set("Request Validated Successfully !");
+              setTimeout(() => {
+                this.shownSuccessMsg.set(false);
+                this.successMsg.set("");
+              } , 2500)
               this.selectedRequest = null;
             },
             error: (error) => console.error('Error updating user points:', error)
@@ -109,6 +131,12 @@ export class CollectorRequestsComponent implements OnInit {
         next: () => {
           this.loadCollectorRequests();
           this.selectedRequest = null;
+          this.shownRejectionMsg.set(true);
+          this.errorMsg.set("Request Rejected Succesfully !");
+          setTimeout(() => {
+            this.shownRejectionMsg.set(false);
+            this.errorMsg.set("");
+          } , 2500)
         },
         error: (error) => console.error('Error rejecting request:', error)
       });

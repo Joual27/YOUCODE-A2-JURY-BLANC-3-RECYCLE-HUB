@@ -7,6 +7,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/service/auth.service';
 import { AppState } from '../../../core/store/app.state';
 import { CommonModule } from '@angular/common';
+import { logout } from '../../../modules/auth/state/auth.actions';
 
 @Component({
   selector: 'app-user-navbar',
@@ -38,6 +39,7 @@ export class UserNavbarComponent implements OnInit {
 
   logout(): void {
     this.authService.removeLoggedInUser();
+    this.store.dispatch(logout())
     this.router.navigate(['/']);
   }
 }

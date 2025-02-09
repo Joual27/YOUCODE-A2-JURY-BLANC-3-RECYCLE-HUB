@@ -4,11 +4,12 @@ import { Request, User } from '../../../../shared/models';
 import { Store } from '@ngrx/store';
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
 import { CollectionRequestService } from '../../../user/services/collection-request.service';
+import { TitleComponent } from "../../../../shared/ui/title/title.component";
 
 @Component({
   selector: 'app-pending-collection-request-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TitleComponent],
   templateUrl: './pending-collection-request-list.component.html',
   styleUrls: ['./pending-collection-request-list.component.css']
 })

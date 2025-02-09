@@ -7,11 +7,10 @@
 }
 
 
-<div class="w-[80%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-    <h2 class="text-2xl underline font-bold mb-6 text-secondary-green">Pending Collection Requests</h2>
-    
-    
+<div class="w-[80%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl relative">
+    <app-title title="Pending Collection Requests" />
 
+   <div class="flex flex-col gap-2 mt-12">
     <div *ngIf="pendingRequests.length === 0" class="text-center text-gray-500">
       There are no pending requests in your area at the moment.
     </div>
@@ -39,4 +38,5 @@
         </button>
       </div>
     </div>
+   </div>
   </div>
