@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '
 import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Request, WasteType, WasteItem, User } from '../../../../shared/models';
-import { CollectionRequestService } from '../../services/collection-request.service';
 import { Store } from '@ngrx/store';
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
+import { TitleComponent } from "../../../../shared/ui/title/title.component";
 
 @Component({
   selector: 'app-request-update-popup',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TitleComponent],
   templateUrl: './request-update-popup.component.html',
   styleUrls: ['./request-update-popup.component.css']
 })
@@ -116,6 +116,7 @@ export class RequestUpdatePopupComponent implements OnInit {
           this.showErrorMessage("Collection date must start from tomorrow , between 9 AM and 6 PM.");
           return;
         }
+      
         const wasteItems: WasteItem[] = this.wastes.value.filter((waste: WasteItem) => waste.weight > 0);
         const updatedRequest: Request = {
           ...this.request,
@@ -124,8 +125,11 @@ export class RequestUpdatePopupComponent implements OnInit {
           collectionDateTime: this.requestForm.get('collectionDateTime')?.value,
           points: this.totalPoints
         };
-        this.updateRequest.emit(updatedRequest);
-        this.showSuccessMessage();
+        this.shownSuccessMsg.set(true);
+        setTimeout(() => {
+          this.shownSuccessMsg.set(false);
+          this.updateRequest.emit(updatedRequest);  
+        }, 2500);
       } else {
         this.showErrorMessage("Overall weight must be between 1 and 10.");
       }
@@ -141,12 +145,7 @@ export class RequestUpdatePopupComponent implements OnInit {
     }, 3500);
   }
 
-  showSuccessMessage(): void {
-    this.shownSuccessMsg.set(true);
-    setTimeout(() => {
-      this.shownSuccessMsg.set(false);
-    }, 2500);
-  }
+
 
   close() {
     this.closePopup.emit();

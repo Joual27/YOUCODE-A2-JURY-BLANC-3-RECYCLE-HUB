@@ -6,10 +6,11 @@ import { CollectionRequestService } from '../../services/collection-request.serv
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TitleComponent } from "../../../../shared/ui/title/title.component";
 
 @Component({
   selector: 'app-collection-request',
-  imports: [ReactiveFormsModule , CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TitleComponent],
   templateUrl: './collection-request.component.html',
   styleUrl: './collection-request.component.css'
 })

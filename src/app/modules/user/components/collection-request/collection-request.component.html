@@ -1,13 +1,15 @@
 
 @if (shownSuccessMsg()) {
-    <div class="w-[300px] h-[50px] bg-primary-green text-white font-semibold rounded-2xl flex items-center justify-center text-[.85rem] mb-4 mx-auto">
-        <p>Request Created Successfully</p>
-    </div>  
+  <div class="w-[60%] mx-auto bg-[#8bc349] bg-opacity-70 h-[50px] z-1000 text-white text-[.9rem] rounded-sm relative font-semibold flex items-center justify-start px-8">
+    <div class="absolute left-0 top-0 w-[20px] bg-[#8bc349]  bg-opacity-80 h-full ">
+    </div>
+    <p>Request Created Succesfully !</p>
+  </div>
 }
-<div class="w-[60%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-    <h2 class="text-2xl font-bold mb-6 text-secondary-green underline">Create Collection Request</h2>
+<div class="w-[60%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl relative">
+    <app-title title="Create Collection Request"/>
     
-    <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="space-y-4 mt-16">
       <div formArrayName="wastes">
         <h3 class="text-[.9rem] font-medium mb-2">Waste Types :</h3>
         <div *ngFor="let waste of wastes.controls; let i = index" [formGroupName]="i" class="flex items-center space-x-4 mb-2">
@@ -39,9 +41,9 @@
       </div>
   
       <div class="w-full flex justify-end">
-        <button type="submit" class="w-[20%] bg-primary-green text-white p-2 rounded hover:opacity-90 cursor-pointer">
+        <button type="submit" class="w-[20%] bg-orange-300 text-white font-semibold text-[.9rem] p-2 rounded hover:bg-opacity-90 cursor-pointer">
             Submit Request
-          </button>
+        </button>
       </div>
     </form>
   </div>
