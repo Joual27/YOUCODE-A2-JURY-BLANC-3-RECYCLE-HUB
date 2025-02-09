@@ -5,10 +5,11 @@ import { Store } from '@ngrx/store';
 import { selectSignedInUser } from '../../../auth/state/auth.selectors';
 import { CommonModule } from '@angular/common';
 import { CollectionRequestItemComponent } from "../collection-request-item/collection-request-item.component";
+import { TitleComponent } from "../../../../shared/ui/title/title.component";
 
 @Component({
   selector: 'app-collection-request-list',
-  imports: [CommonModule, CollectionRequestItemComponent],
+  imports: [CommonModule, CollectionRequestItemComponent, TitleComponent],
   templateUrl: './collection-request-list.component.html',
   styleUrl: './collection-request-list.component.css'
 })

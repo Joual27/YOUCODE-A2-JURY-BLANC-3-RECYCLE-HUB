@@ -9,6 +9,7 @@ import { filter, Observable, Subject, take, takeUntil } from 'rxjs';
 import { User } from '../../../shared/models';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { hideAuthPopup } from '../../home/state/home.actions';
 
 @Component({
   selector: 'app-login-form',
@@ -68,6 +69,7 @@ export class LoginFormComponent implements OnDestroy {
       setTimeout(() => {
         const redirectPath = user!.role === 'user' ? 'user/requests' : 'collector/dashboard';
         this.router.navigate([redirectPath]);
+        this.store.dispatch(hideAuthPopup());
         this.shownLoginSuccessMsg.set(false);
       }, 2500);
     });

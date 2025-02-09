@@ -8,6 +8,7 @@ export interface User{
     address : string ,
     role : string,
     points?: number;
+    balance ?: number
 }
 
 export type WasteType = 'plastic' | 'glass' | 'paper' | 'metal';
@@ -26,7 +27,7 @@ export interface Request {
   collectionDateTime: string; 
   status: RequestStatus;
   collectorId?: string;
-  points?: number;
+  points?: number
 }
 
 export interface VoucherOption {

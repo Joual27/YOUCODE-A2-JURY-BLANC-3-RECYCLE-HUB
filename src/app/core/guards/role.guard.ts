@@ -19,7 +19,7 @@ export class RoleGuard implements CanActivate {
     return this.store.select(selectSignedInUser).pipe(
       map(user => {
         if (!user) {
-          return this.router.createUrlTree(['/login']);
+          return this.router.createUrlTree(['/']);
         }
 
         const requiredRole = route.data['role'];
